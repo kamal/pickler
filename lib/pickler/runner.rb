@@ -311,6 +311,9 @@ encouraged to change.
         @includes ||= []
         @includes << "unstarted"
       end
+      on "--all", "pull unstarted and unscheduled stories" do
+        @includes = %w(unscheduled unstarted)
+      end
 
       process do |*args|
         args.replace(pickler.scenario_features(@includes)) if args.empty?
