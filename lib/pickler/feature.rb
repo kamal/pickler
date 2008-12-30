@@ -88,7 +88,7 @@ class Pickler
     end
 
     def story
-      @story ||= id ? @pickler.project.story(id) : Pickler::Tracker::Story.new(@pickler.project, :story_type => "feature")
+      @story ||= id ? pickler.project.story(id) : pickler.new_story(:story_type => "feature")
     end
 
   end
