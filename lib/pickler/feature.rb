@@ -88,7 +88,7 @@ class Pickler
     end
 
     def story
-      @story ||= @pickler.project.story(id) if id
+      @story ||= id ? @pickler.project.story(id) : Pickler::Tracker::Story.new(@pickler.project)
     end
 
   end
