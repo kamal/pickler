@@ -114,9 +114,10 @@ class Pickler
     Dir[features_path('**','*.feature')].map {|f|feature(f)}.select {|f|f.id}
   end
 
-  def scenario_features
+  def scenario_features(includes)
+    ignored_states = %w(unscheduled unstarted) - Array(includes)
     project.stories(scenario_word, :includedone => true).reject do |s|
-      %(unscheduled unstarted).include?(s.current_state)
+      ignored_states.include?(s.current_state)
     end.select do |s|
       s.to_s =~ /^\s*#{Regexp.escape(scenario_word)}:/ && parser.parse(s.to_s)
     end

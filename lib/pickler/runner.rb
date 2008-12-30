@@ -303,9 +303,17 @@ Download the given story or all well formed stories to the features/ directory.
 Previously unseen stories will be given a numeric filename that you are
 encouraged to change.
       EOF
+      on "--include-unscheduled", "pull unscheduled stories" do
+        @includes ||= []
+        @includes << "unscheduled"
+      end
+      on "--include-unstarted", "pull unstarted stories" do
+        @includes ||= []
+        @includes << "unstarted"
+      end
 
       process do |*args|
-        args.replace(pickler.scenario_features) if args.empty?
+        args.replace(pickler.scenario_features(@includes)) if args.empty?
         args.each do |arg|
           pickler.feature(arg).pull
         end
