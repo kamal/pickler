@@ -15,6 +15,7 @@ describe Pickler::Feature do
     feature = Pickler::Feature.new(@pickler, "account")
     feature.story.should be_kind_of(Pickler::Tracker::Story)
     feature.story.id.should be_nil
+    feature.story.story_type.should == "feature"
   end
 
 end
