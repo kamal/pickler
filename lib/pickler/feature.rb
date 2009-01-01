@@ -67,6 +67,7 @@ class Pickler
       return if story.to_s == local_body.to_s
       story.to_s = local_body
       story.save
+      self
     end
 
     def finish
@@ -90,10 +91,13 @@ class Pickler
 
     def story
       unless defined?(@story)
-        @story = id ? pickler.project.story(id) : pickler.new_story(:story_type => "feature")
+        @story = new_feature? ? pickler.new_story(:story_type => "feature") : pickler.project.story(id)
       end
       @story
     end
 
+    def new_feature?
+      id == nil
+    end
   end
 end

@@ -290,7 +290,8 @@ first line.
       process do |*args|
         args.replace(pickler.local_features) if args.empty?
         args.each do |arg|
-          pickler.feature(arg).push
+          feature = pickler.feature(arg).push
+          File.open(feature.filename, 'w') { |f| f.puts feature.story } if feature.new_feature?
         end
       end
     end
