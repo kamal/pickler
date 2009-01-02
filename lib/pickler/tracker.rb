@@ -11,23 +11,30 @@ class Pickler
 
     attr_reader :token
 
-    def initialize(token)
+    def initialize(token, uses_ssl)
       require 'active_support/core_ext/blank'
       require 'active_support/core_ext/hash'
       @token = token
+      @uses_ssl = uses_ssl
     end
 
     def request(method, path, *args)
       require 'net/http'
-      Net::HTTP.start(ADDRESS) do |http|
-        headers = {
-          "X-TrackerToken" => @token,
-          "Accept"         => "application/xml",
-          "Content-type"   => "application/xml"
-        }
-        klass = Net::HTTP.const_get(method.to_s.capitalize)
-        http.request(klass.new("#{BASE_PATH}#{path}", headers), *args)
+      port = (@uses_ssl) ? Net::HTTP.https_default_port : Net::HTTP.http_default_port
+      http = Net::HTTP.new(ADDRESS, port)
+      if @uses_ssl
+        require 'net/https'
+        require 'openssl'
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        http.use_ssl = true
       end
+      headers = {
+        "X-TrackerToken" => @token,
+        "Accept"         => "application/xml",
+        "Content-type"   => "application/xml"
+      }
+      klass = Net::HTTP.const_get(method.to_s.capitalize)
+      http.request(klass.new("#{BASE_PATH}#{path}", headers), *args)
     end
 
     def request_xml(method, path, *args)

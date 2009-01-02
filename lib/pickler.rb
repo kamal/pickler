@@ -101,7 +101,8 @@ class Pickler
       unless id = project_id
         raise Error, 'echo project_id: ... > features/tracker.yml'
       end
-      Tracker.new(token).project(id)
+      uses_ssl = config['uses_ssl'] # not required
+      Tracker.new(token, uses_ssl).project(id)
     end
   end
 
