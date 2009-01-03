@@ -3,7 +3,7 @@ require File.join(File.dirname(File.dirname(File.dirname(__FILE__))),'spec_helpe
 describe Pickler::Tracker::Story do
 
   before do
-    @tracker = Pickler::Tracker.new('', false)
+    @tracker = Pickler::Tracker.new('')
     @project = @tracker.project(1)
     @story   = @project.story(1)
   end

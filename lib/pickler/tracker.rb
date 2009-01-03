@@ -9,9 +9,9 @@ class Pickler
 
     class Error < Pickler::Error; end
 
-    attr_reader :token
+    attr_reader :token, :uses_ssl
 
-    def initialize(token, uses_ssl)
+    def initialize(token, uses_ssl = false)
       require 'active_support/core_ext/blank'
       require 'active_support/core_ext/hash'
       @token = token
@@ -20,9 +20,9 @@ class Pickler
 
     def request(method, path, *args)
       require 'net/http'
-      port = (@uses_ssl) ? Net::HTTP.https_default_port : Net::HTTP.http_default_port
+      port = uses_ssl ? Net::HTTP.https_default_port : Net::HTTP.http_default_port
       http = Net::HTTP.new(ADDRESS, port)
-      if @uses_ssl
+      if uses_ssl
         require 'net/https'
         require 'openssl'
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
