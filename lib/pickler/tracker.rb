@@ -9,25 +9,23 @@ class Pickler
 
     class Error < Pickler::Error; end
 
-    attr_reader :token, :uses_ssl
+    attr_reader :token
 
-    def initialize(token, uses_ssl = false)
+    def initialize(token)
       require 'active_support/core_ext/blank'
       require 'active_support/core_ext/hash'
       @token = token
-      @uses_ssl = uses_ssl
+    end
+
+    def http
+      unless @http
+        require 'net/http'
+        @http = Net::HTTP.new(ADDRESS)
+      end
+      @http
     end
 
     def request(method, path, *args)
-      require 'net/http'
-      port = uses_ssl ? Net::HTTP.https_default_port : Net::HTTP.http_default_port
-      http = Net::HTTP.new(ADDRESS, port)
-      if uses_ssl
-        require 'net/https'
-        require 'openssl'
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        http.use_ssl = true
-      end
       headers = {
         "X-TrackerToken" => @token,
         "Accept"         => "application/xml",
